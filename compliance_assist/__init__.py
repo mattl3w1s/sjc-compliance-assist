@@ -13,18 +13,20 @@ except:
 
 class Site(object):
     
-    def __init__(self):
+    def __init__(self,download_destination="./data"):
+
         options = webdriver.ChromeOptions()
         profile = {"plugins.plugins_list": 
                 [
                     {"enabled":False,"name":"Chrome PDF Viewer"}
                 ],
-                "download.default_directory" : '/Users/mattlewis/Downloads/tmp'}
+                "download.default_directory" : download_destination}
         options.add_experimental_option("prefs",profile)
         self.driver = webdriver.Chrome(options = options)
         self.driver.get("https://sanjac.compliance-assist.com/")
-
-    def login(self):
+        self._login()
+    
+    def _login(self):
         """
         Login to the Compliance Assist site using credentials imported from
         sensitive module (which is .gitignored).
@@ -42,13 +44,15 @@ class Site(object):
         # Click
         submit_button.click()
 
-    def download(self, url, destination):
+    def download(self, url):
         """
         Method to download files at supplied `url` from Compliance Assist and
-        save file in local `destination`.
+        save file in local `destination`. 
+        
+        Note: this method utilizes chromes automatic downloading for files. 
+        If the url points to a page chrome wants to load, it will load it.
         """
-
-        pass
+        self.driver.get(url)
 
     def find_element(self,LOCATOR):
         """
