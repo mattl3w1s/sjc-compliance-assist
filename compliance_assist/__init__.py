@@ -44,6 +44,14 @@ class Site(object):
         # Click
         submit_button.click()
 
+    def goto(self,url):
+        """
+        Navigate to url.
+        
+        Note: this can be used to download files.
+        """
+        self.driver.get(url)
+
     def download(self, url):
         """
         Method to download files at supplied `url` from Compliance Assist and
@@ -52,9 +60,9 @@ class Site(object):
         Note: this method utilizes chromes automatic downloading for files. 
         If the url points to a page chrome wants to load, it will load it.
         """
-        self.driver.get(url)
+        self.goto(url)
 
-    def find_element(self,LOCATOR):
+    def _find_element(self,LOCATOR):
         """
         Exposes driver for the purpose of locating elements on site.
         """
