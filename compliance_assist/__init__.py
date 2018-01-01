@@ -1,5 +1,6 @@
 from selenium import webdriver
 from compliance_assist.locators import LoginPageLocators
+import os
 
 
 # Import credentials, if available
@@ -10,10 +11,11 @@ except:
     USER_NAME = ""
     PASSWORD = ""
 
+DOWNLOAD_DEST = "/Users/mattlewis/Development/python/ComplianceAssist/compliance_assist/data/tmp"
 
 class Site(object):
     
-    def __init__(self,download_destination="./data"):
+    def __init__(self,download_destination=DOWNLOAD_DEST):
 
         options = webdriver.ChromeOptions()
         profile = {"plugins.plugins_list": 
@@ -61,15 +63,26 @@ class Site(object):
         If the url points to a page chrome wants to load, it will load it.
         """
         download_error_indicator = None
+        before = os.listdir(DOWNLOAD_DEST)
         self.goto(url)
-        
+        after = os.listdir(DOWNLOAD_DEST)
+        change = set(after) - set(before)
+        try:
+            file_name = change.pop()
+        except:
+            print("First catch!")
+            raise IOError
+
+        # Detects that file could not be found and throws and IOError
         try:
             download_error_indicator = self.driver.find_element(*LoginPageLocators.NO_FILE_FOUND)
         except:
             pass
         if(download_error_indicator):
+            print("Second catch!")
             raise IOError   
         
+
 
     def _find_element(self,LOCATOR):
         """
