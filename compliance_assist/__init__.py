@@ -60,7 +60,16 @@ class Site(object):
         Note: this method utilizes chromes automatic downloading for files. 
         If the url points to a page chrome wants to load, it will load it.
         """
+        download_error_indicator = None
         self.goto(url)
+        
+        try:
+            download_error_indicator = self.driver.find_element(*LoginPageLocators.NO_FILE_FOUND)
+        except:
+            pass
+        if(download_error_indicator):
+            raise IOError   
+        
 
     def _find_element(self,LOCATOR):
         """

@@ -9,3 +9,5 @@ class LoginPageLocators(object):
     SUBMIT_LOCATOR = (By.ID, "submitButton")
 
     CONFIRMATION_LOCATOR = (By.ID, "ctl00_LVUserMenu_LWelcome")
+
+    NO_FILE_FOUND = (By.ID,"PDoesNotExist")
