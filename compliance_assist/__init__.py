@@ -1,6 +1,8 @@
+import os
+from time import sleep
 from selenium import webdriver
 from compliance_assist.locators import LoginPageLocators
-import os
+
 
 
 # Import credentials, if available
@@ -24,6 +26,7 @@ class Site(object):
                 ],
                 "download.default_directory" : download_destination}
         options.add_experimental_option("prefs",profile)
+        self.DOWNLOAD_DEST = DOWNLOAD_DEST
         self.driver = webdriver.Chrome(options = options)
         self.driver.get("https://sanjac.compliance-assist.com/")
         self._login()
@@ -63,9 +66,9 @@ class Site(object):
         If the url points to a page chrome wants to load, it will load it.
         """
         download_error_indicator = None
-        before = os.listdir(DOWNLOAD_DEST)
+        before = os.listdir(self.DOWNLOAD_DEST)
         self.goto(url)
-        after = os.listdir(DOWNLOAD_DEST)
+        after = os.listdir(self.DOWNLOAD_DEST)
         change = set(after) - set(before)
         try:
             file_name = change.pop()
@@ -82,6 +85,15 @@ class Site(object):
             print("Second catch!")
             raise IOError   
         
+        while(('crdownload' in file_name) or ('.com' in file_name)):
+                sleep(.5)
+                before = after
+                after = os.listdir(self.DOWNLOAD_DEST)
+                change = set(after) - set(before)
+                if(change):
+                    file_name = change.pop()
+                print(file_name)
+        return file_name
 
 
     def _find_element(self,LOCATOR):
