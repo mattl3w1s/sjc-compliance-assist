@@ -3,8 +3,6 @@ from time import sleep
 from selenium import webdriver
 from compliance_assist.locators import LoginPageLocators
 
-
-
 # Import credentials, if available
 try:
     from compliance_assist.sensitive import USER_NAME, PASSWORD
@@ -30,6 +28,9 @@ class Site(object):
         self.driver.get("https://sanjac.compliance-assist.com/")
         self._login()
     
+    def get_cookies(self):
+        return self.driver.get_cookies()
+
     def _login(self):
         """
         Login to the Compliance Assist site using credentials imported from
