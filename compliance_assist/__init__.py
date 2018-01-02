@@ -13,11 +13,10 @@ except:
     USER_NAME = ""
     PASSWORD = ""
 
-DOWNLOAD_DEST = "/Users/mattlewis/Development/python/ComplianceAssist/compliance_assist/data/tmp"
 
 class Site(object):
     
-    def __init__(self,download_destination=DOWNLOAD_DEST):
+    def __init__(self,download_destination="/Users/mattlewis/Development/python/ComplianceAssist/compliance_assist/data/tmp"):
 
         options = webdriver.ChromeOptions()
         profile = {"plugins.plugins_list": 
@@ -26,7 +25,7 @@ class Site(object):
                 ],
                 "download.default_directory" : download_destination}
         options.add_experimental_option("prefs",profile)
-        self.DOWNLOAD_DEST = DOWNLOAD_DEST
+        self.DOWNLOAD_DEST = download_destination
         self.driver = webdriver.Chrome(options = options)
         self.driver.get("https://sanjac.compliance-assist.com/")
         self._login()
@@ -73,17 +72,15 @@ class Site(object):
         try:
             file_name = change.pop()
         except:
-            print("First catch!")
-            raise IOError
+            raise ChangelessDirectoryError
 
-        # Detects that file could not be found and throws and IOError
+        # Detects that file could not be found and throws a FileNotFoundError
         try:
             download_error_indicator = self.driver.find_element(*LoginPageLocators.NO_FILE_FOUND)
         except:
             pass
         if(download_error_indicator):
-            print("Second catch!")
-            raise IOError   
+            raise FileNotFoundError
         
         while(('crdownload' in file_name) or ('.com' in file_name)):
                 sleep(.5)
@@ -104,3 +101,12 @@ class Site(object):
 
     def close(self):
         self.driver.close()
+
+
+class FileNotFound(Exception):
+    def __init__(self, *args, **kwargs):
+        Exception.__init__(self, *args, **kwargs)
+
+class ChangelessDirectoryError(Exception):
+    def __init__(self, *args, **kwargs):
+        Exception.__init__(self, *args, **kwargs)
